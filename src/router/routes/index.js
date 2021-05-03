@@ -6,7 +6,7 @@ import PagesRoutes from './Pages'
 const TemplateTitle = '%s - Vuexy React Admin Template'
 
 // ** Default Route
-const DefaultRoute = '/dashboard/ecommerce'
+const DefaultRoute = '/apps/user/list'
 
 // ** Merge Routes
 const Routes = [...AppRoutes, ...PagesRoutes]
