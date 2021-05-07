@@ -132,6 +132,12 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
       setStudentProfile("")
       setTitle("")
     }
+
+    dispatch(
+        getAllAggrements({
+          q: ""
+        })
+      )
   }, [dispatch, store.isEdit])
 
   // ** Store Vars
@@ -149,11 +155,7 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
 
   const getAggrement = (val) => {
     if (val.length > 3) {
-      dispatch(
-        getAllAggrements({
-          q: val
-        })
-      )
+      
     }
   }
 
@@ -250,8 +252,7 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
                 isClearable
                 value={agreement}
                 options={store.aggrements}
-                onInputChange={selectAggrement}
-                onChange={selectedItemAggrement}
+                 onChange={selectedItemAggrement}
                 name="agreement"
                 id="agreement"
                 innerRef={register({ required: true })}

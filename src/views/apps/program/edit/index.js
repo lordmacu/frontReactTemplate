@@ -160,6 +160,12 @@ const ItemEdit = (props) => {
       setReglamento("")
       setBrochure("")
     }
+
+    dispatch(
+        getAllAggrements({
+          q: ""
+        })
+      )
   }, [dispatch, store.selectedItem])
 
   // ** Store Vars
@@ -418,10 +424,10 @@ const ItemEdit = (props) => {
                             <Label for="directorAcad">Universidad</Label>
                             <Select
                               isClearable
-                              value={""}
-                              options={store.people}
+                              value={agreement}
+                              options={store.aggrements}
                               onInputChange={selectUser}
-                              onChange={selectedItemDirectorAcad}
+                              onChange={selectedItemAggrement}
                               name="directorAcad"
                               id="directorAcad"
                               innerRef={register({ required: true })}
