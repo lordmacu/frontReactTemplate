@@ -245,7 +245,7 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
           </Col>
           <Col>
             <FormGroup className="mb-2">
-              <Label for="agreement">Convenio</Label>
+              <Label for="agreement">Universidad</Label>
               <Select
                 isClearable
                 value={agreement}
@@ -313,41 +313,7 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
           </Col>
         </Row>
 
-        <Row>
-          <Col>
-            <FormGroup>
-              <Label for="period">
-                Periodo: <span className="text-danger">*</span>
-              </Label>
-              <Input
-                name="period"
-                id="period"
-                autoComplete={0}
-                defaultValue={period}
-                placeholder="Ingresar el periodo"
-                innerRef={register({ required: true })}
-                className={classnames({ "is-invalid": errors["period"] })}
-              />
-            </FormGroup>
-          </Col>
-
-          <Col>
-            <FormGroup>
-              <Label for="year">
-                Año: <span className="text-danger">*</span>
-              </Label>
-              <Input
-                name="year"
-                id="year"
-                autoComplete={0}
-                defaultValue={year}
-                placeholder="Ingresar el año"
-                innerRef={register({ required: true })}
-                className={classnames({ "is-invalid": errors["year"] })}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
+        
         <Row>
           <Col>
             <FormGroup>
@@ -412,47 +378,7 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
             className={classnames({ "is-invalid": errors["studentProfile"] })}
           />
         </FormGroup>
-        <Row>
-          <Col xs="12" lg="6" md="6">
-            <FormGroup>
-              <Label for="dni">
-                Fecha Inicio <span className="text-danger">*</span>
-              </Label>
-              <Flatpickr
-                name="startDate"
-                id="startDate"
-                autoComplete={0}
-                defaultValue={startDateDefault}
-                value={startDate}
-                className={classnames("form-control", {
-                  "is-invalid": errors.dob
-                })}
-                onChange={(date) => {
-                  setStartDate(date)
-                }}
-              />
-            </FormGroup>
-          </Col>
-          <Col xs="12" lg="6" md="6">
-            <FormGroup>
-              <Label for="birth-date">Fecha fin</Label>
-
-              <Flatpickr
-                name="birthday"
-                id="birthday"
-                autoComplete={0}
-                defaultValue={endDateDefault}
-                value={endDate}
-                className={classnames("form-control", {
-                  "is-invalid": errors.dob
-                })}
-                onChange={(date) => {
-                  setEndDate(date)
-                }}
-              />
-            </FormGroup>
-          </Col>
-        </Row>
+        
         <Row>
           <Col>
             <Button

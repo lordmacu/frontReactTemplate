@@ -421,14 +421,7 @@ const List = () => {
                   }}>
                     Agregar nuevo
                   </Button.Ripple>
-                    <Button.Ripple className="ml-2" color='primary' onClick = {() => {
-                     
-                     dispatch(
-                      setEditOn(Math.random(), {})
-                    )
-                  }}>
-                    Asignar asignatura
-                  </Button.Ripple>
+                    
                 </Col>
               </Row>
             </div>

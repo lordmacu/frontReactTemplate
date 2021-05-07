@@ -152,20 +152,7 @@ export const columns = [
       </div>
     )
   },
-  {
-    name: "Periodo",
-    minWidth: "40px",
-    selector: "gender",
-    sortable: true,
-    cell: (row) => <span className="text-capitalize">{row.period}</span>
-  },
-  {
-    name: "Año",
-    minWidth: "40px",
-    selector: "city",
-    sortable: true,
-    cell: (row) => <span className="text-capitalize">{row.year}</span>
-  },
+  
   {
     name: "Fecha inicio",
     minWidth: "40px",
