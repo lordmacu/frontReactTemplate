@@ -10,7 +10,7 @@ const MySwal = withReactContent(Swal)
 import Avatar from "@components/avatar"
 
 // ** Store & Actions
-import { getItem, deleteItem, setEditOn, cloneItem } from "../store/action"
+import { getItem, deleteItem, setEditOn, cloneItem, setPopUpAsignatura} from "../store/action"
 import { store } from "@store/storeConfig/store"
 
 // ** Third Party Components
@@ -67,7 +67,7 @@ const formatDate = (date) => {
 export const columns = [
   {
     name: "Actions",
-    minWidth: "180px",
+    minWidth: "250px",
     maxWidth: "2500px",
     selector: "_id",
     sortable: true,
@@ -79,10 +79,10 @@ export const columns = [
           outline
           color="primary"
           onClick={() => {
-            store.dispatch(setEditOn(Math.random(), row))
+            store.dispatch(setPopUpAsignatura(true, row))
           }}
         >
-          Materia
+          Asignatura
         </Button.Ripple>
         <Link
           to={`/apps/program/edit/${row._id}`}

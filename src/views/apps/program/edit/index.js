@@ -1,29 +1,19 @@
 // ** React Imports
 import { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
+import { Paperclip, ExternalLink } from "react-feather"
 
 // ** Store & Actions
 import { useSelector, useDispatch } from "react-redux"
-
-// ** Third Party Components
-import { User, Info, Share2 } from "react-feather"
-
-// ** React Import
-import InputPasswordToggle from "@components/input-password-toggle"
-
-// ** Custom Components
-import Sidebar from "@components/sidebar"
+import { getBase64, gotoFile, getImageUser } from "@utils"
 
 import Select from "react-select"
 import Uppy from "@uppy/core"
 const XHRUpload = require("@uppy/xhr-upload")
 import SunEditor from "suneditor-react"
 import "suneditor/dist/css/suneditor.min.css"
-import { DragDrop } from "@uppy/react"
 import VersionItem from "./VersionItem"
 // ** Utils
-import { getImageUser } from "@utils"
-import Flatpickr from "react-flatpickr"
 import "@styles/react/libs/flatpickr/flatpickr.scss"
 
 // ** Third Party Components
@@ -59,7 +49,7 @@ import {
   getALlPeople,
   getItem,
   getAllVersions,
-  addVersion 
+  addVersion
 } from "../store/action"
 
 // ** Styles
@@ -77,6 +67,7 @@ const ItemEdit = (props) => {
   const baseUrl = "http://localhost:3000/api/"
 
   const [name, setName] = useState("")
+  const [reglamento, setReglamento] = useState("")
 
   const [sigla, setSigla] = useState("")
 
@@ -99,6 +90,7 @@ const ItemEdit = (props) => {
   const [studentProfile, setStudentProfile] = useState("")
   const [title, setTitle] = useState("")
   const [versions, setVersions] = useState([])
+  const [brochure, setBrochure] = useState([])
 
   const { register, errors, handleSubmit, control, trigger } = useForm({
     defaultValues: { dob: new Date() }
@@ -145,6 +137,8 @@ const ItemEdit = (props) => {
       setPeriod(store.selectedItem.period)
       setYear(store.selectedItem.year)
       setDescription(store.selectedItem.description)
+      setReglamento(store.selectedItem.reglamento)
+      setBrochure(store.selectedItem.brochure)
 
       setStudentProfile(store.selectedItem.studentProfile)
       setTitle(store.selectedItem.title)
@@ -163,6 +157,8 @@ const ItemEdit = (props) => {
       setDescription("")
       setStudentProfile("")
       setTitle("")
+      setReglamento("")
+      setBrochure("")
     }
   }, [dispatch, store.selectedItem])
 
@@ -251,6 +247,8 @@ const ItemEdit = (props) => {
     values["endDate"] = endDate
     values["description"] = description
     values["studentProfile"] = studentProfile
+    values["reglamento"] = reglamento
+    values["brochure"] = brochure
     values["id"] = id
 
     if (id === 0) {
@@ -259,6 +257,15 @@ const ItemEdit = (props) => {
       dispatch(udpateItem(values, props))
     }
   }
+
+  const onSubmitReglamento = (e) => {
+    getBase64(e.target.files[0]).then((data) => setReglamento({ file: data }))
+  }
+
+   const onSubmitBrochure = (e) => {
+    getBase64(e.target.files[0]).then((data) => setBrochure({ file: data }))
+  }
+  
   const versionsStore = useSelector((state) => state.versions)
 
   // ** Function to toggle tabs
@@ -430,6 +437,7 @@ const ItemEdit = (props) => {
                             className="mr-50 cursor-pointer"
                             color="primary"
                             outline
+                            onChange={onSubmitReglamento}
                           >
                             Reglamento
                             <Input
@@ -439,6 +447,19 @@ const ItemEdit = (props) => {
                               hidden
                             />
                           </Button.Ripple>
+                          {reglamento && (
+                            <Button.Ripple
+                              onClick={() => {
+                                gotoFile(reglamento)
+                              }}
+                              tag="label"
+                              className="mr-50 cursor-pointer"
+                              color="primary"
+                              outline
+                            >
+                              <ExternalLink size={14} />
+                            </Button.Ripple>
+                          )}
                         </Col>
                         <Col className="p-2">
                           <Button.Ripple
@@ -446,6 +467,7 @@ const ItemEdit = (props) => {
                             className="mr-50 cursor-pointer"
                             color="primary"
                             outline
+                             onChange={onSubmitBrochure}
                           >
                             Brochure
                             <Input
@@ -455,6 +477,19 @@ const ItemEdit = (props) => {
                               hidden
                             />
                           </Button.Ripple>
+                          {brochure && (
+                            <Button.Ripple
+                              onClick={() => {
+                                gotoFile(brochure)
+                              }}
+                              tag="label"
+                              className="mr-50 cursor-pointer"
+                              color="primary"
+                              outline
+                            >
+                              <ExternalLink size={14} />
+                            </Button.Ripple>
+                          )}
                         </Col>
                       </Row>
 
@@ -743,9 +778,7 @@ const ItemEdit = (props) => {
                       color="success"
                       className="mb-2"
                       onClick={() => {
-                       
                         addVersionMethod()
-                        
                       }}
                     >
                       Agregar Versión

@@ -29,7 +29,7 @@ export default [
   },
   {
     id: "subjects",
-    title: "Materias",
+    title: "Asignatura",
     icon: <User size={20} />,
     navLink: "/apps/subject/list"
   },

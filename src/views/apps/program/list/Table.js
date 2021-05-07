@@ -4,19 +4,26 @@ import {getImageUser } from '@utils'
 
 // ** Invoice List Sidebar
 import Sidebar from './Sidebar'
+import Swal from "sweetalert2"
+import withReactContent from "sweetalert2-react-content"
 
+const MySwal = withReactContent(Swal)
 // ** Columns
 import { columns } from './columns'
 
+import Select from "react-select"
+
+// ** Styles
+ 
 // ** Store & Actions
-import { getAllData, getData, setEditOn } from '../store/action'
+import { getAllData, getData, setEditOn, setPopUpAsignatura, getSubject, addSubject, getItem, deleteSubjectPost } from '../store/action'
 import { useDispatch, useSelector } from 'react-redux'
 
 // ** Third Party Components
 import ReactPaginate from 'react-paginate'
 import { ChevronDown } from 'react-feather'
 import DataTable from 'react-data-table-component'
-import { Card, Input, Row, Col, Label, CustomInput, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
+import { Card, Input, Row, Col, Label, CustomInput, Button, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup  } from 'reactstrap'
 
 // ** Styles
 import '@styles/react/libs/react-select/_react-select.scss'
@@ -40,9 +47,12 @@ const List = () => {
   const [currentRole, setCurrentRole] = useState({ value: '', label: 'Select Role' })
   const [currentPlan, setCurrentPlan] = useState({ value: '', label: 'Select Plan' })
   const [currentStatus, setCurrentStatus] = useState({ value: '', label: 'Select Status', number: 0 })
-  const [modal, setModal] = useState(false)
+  const [modalAsignatura, setModalAsignatura] = useState(false)
+  const [currentProgram, setCurrentProgram] = useState(false)
+  const [selectedAsignatura, setSelectedAsignatura] = useState(false)
+  const [listSignatures, setListSignatures] = useState(false)
 
-  const toggle = () => setModal(!modal)
+  const toggle = () => setModalAsignatura(!modalAsignatura)
   // ** Function to toggle sidebar
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen)
 
@@ -72,6 +82,8 @@ const List = () => {
     dispatch(
       setEditOn(0, {})
     )
+
+    setCurrentProgram(store.selectedItem)
      
   }, [dispatch, store.selectedItem])
 
@@ -87,10 +99,14 @@ const List = () => {
     toggleSidebar()
   }
  
+    useEffect(() => {
+    setModalAsignatura(store.popUpAsignatura)
+   // setTutorSelected(null)
+   // setCurrentSubjec(store.currentSubject)
+  }, [dispatch, store.popUpAsignatura])
 
   useEffect(() => {
-console.log("se eta pichando aqui")
-    if (store.isEdit !== 0) {
+     if (store.isEdit !== 0) {
       showEdit(store.rowData)
     }
   }, [dispatch, store.isEdit])
@@ -110,6 +126,11 @@ console.log("se eta pichando aqui")
       })
     )
     setCurrentPage(page.selected + 1)
+  }
+
+  
+  const toggleStudentModal = () => {
+    dispatch(setPopUpAsignatura(false))
   }
 
   // ** Function in get data on rows per page
@@ -206,16 +227,135 @@ console.log("se eta pichando aqui")
     }
   }
 
+   const getSubjects = (val) => {
+    if (val.length > 1) {
+      dispatch(
+        getSubject({
+          q: val
+        })
+      )
+    }
+   }
+  
+    const addSubjectmethod = () => {
+    if (!!selectedAsignatura) {
+      dispatch(
+        addSubject({
+          selectedAsignatura,
+          program: store.currentProgram._id
+          
+        })
+      ).then(() => {
+        dispatch(getItem(store.currentProgram._id))
+
+        setSelectedAsignatura(null)
+ 
+        MySwal.fire({
+          title: "Se ha agregado el estudiante con éxito",
+          icon: "info",
+          buttonsStyling: true,
+          confirmButtonText: "Ok"
+        })
+
+        // dispatch(setPopUpTeacher(false))
+      })
+    }
+  }
+
+  const selectSubject = (val) => {
+    getSubjects(val)
+  }
+
+   const deleteSubject = (subject, program) => {
+    dispatch(
+      deleteSubjectPost({
+        subject,
+        program
+      })
+    ).then(() => {
+      dispatch(getItem(program))
+    })
+  }
+ 
+  useEffect(() => {
+    setPopUpAsignatura(store.popUpAsignatura)
+    //setTutorSelected(null)
+    setCurrentProgram(store.currentProgram)
+
+    console.log("aqkfdasdf asdf asdf asdfasf ", store.currentProgram)
+  }, [dispatch, store.popUpAsignatura])
+  
+
+   useEffect(() => {
+    
+     
+     setListSignatures(store.subjects)
+  }, [dispatch, store.subjects])
+
   return (
     <Fragment>
-        <Modal isOpen={modal} toggle={toggle} >
-        <ModalHeader toggle={toggle}>Modal title</ModalHeader>
-        <ModalBody>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        </ModalBody>
+        <Modal isOpen={modalAsignatura} toggle={toggleStudentModal} >
+        <ModalHeader toggle={toggleStudentModal}>Agregar asignaturas</ModalHeader>
+         {currentProgram && (
+          <ModalBody>
+            <Row>
+              <Col>
+                <FormGroup>
+                  <Label for="status">Asignatura</Label>
+ 
+                
+                    <Select
+                     
+                      value={selectedAsignatura || ""}
+                      onChange={(val) => {
+                        setSelectedAsignatura(val)
+                      }}
+                      onInputChange={selectSubject}
+                     
+                      options={(listSignatures)}
+                      name="tutors"
+                      id="tutors"
+                    />
+                 
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <FormGroup>
+                  <Button
+                    color="primary"
+                    onClick={ addSubjectmethod}
+                 
+                    disabled={selectedAsignatura === null}
+                  >
+                    Agregar asignatura
+                  </Button>
+                </FormGroup>
+              </Col>
+            </Row>
+            <hr />
+            {currentProgram !== null &&
+              currentProgram.subjects.map((subject) => (
+                <Row className="mb-2">
+                  <Col>{subject.name}</Col>
+
+                  <Col className="text-right">
+                    <Button
+                      color="danger"
+                      onClick={() => {
+                        deleteSubject(subject._id, currentProgram._id)
+                      }}
+                    >
+                      Borrar
+                    </Button>
+                  </Col>
+                </Row>
+              ))}
+          </ModalBody>
+        )}
         <ModalFooter>
-          <Button color="primary" onClick={toggle}>Do Something</Button>{' '}
-          <Button color="secondary" onClick={toggle}>Cancel</Button>
+           <Button color="secondary" onClick={toggleStudentModal}>Cancel</Button>
         </ModalFooter>
       </Modal>
       <Card>
@@ -287,7 +427,7 @@ console.log("se eta pichando aqui")
                       setEditOn(Math.random(), {})
                     )
                   }}>
-                    Asignar materias
+                    Asignar asignatura
                   </Button.Ripple>
                 </Col>
               </Row>

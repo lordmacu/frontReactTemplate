@@ -40,6 +40,13 @@ const versionItem = (props) => {
   const [startDate, setStartDate] = useState(new Date())
   const [name, setName] = useState("")
   const [endDate, setEndDate] = useState(new Date())
+
+  const [priceTeacher, setPriceTeacher] = useState("")
+  const [priceDirector, setPriceDirector] = useState("")
+  const [priceCoordinator, setPriceCoordinator] = useState("")
+  const [priceTutorTfm, setPriceTutorTfm] = useState("")
+
+  
   const store = useSelector((state) => state.programs)
   const dispatch = useDispatch()
 
@@ -81,7 +88,11 @@ const versionItem = (props) => {
       sigla,
       year,
       _id,
-      program
+      program,
+      priceTeacher,
+      priceDirector,
+      priceCoordinator,
+      priceTutorTfm
     } = props.item
 
     setStartDate(startDate)
@@ -93,6 +104,10 @@ const versionItem = (props) => {
     setYear(year)
     setId(_id)
     setProgram(program)
+    setPriceTeacher(priceTeacher)
+    setPriceDirector(priceDirector)
+    setPriceCoordinator(priceCoordinator)
+    setPriceTutorTfm(priceTutorTfm)
   }, [props.item])
 
   useEffect(() => {
@@ -215,8 +230,7 @@ const versionItem = (props) => {
                   </FormGroup>
                 </Col>
               </Row>
-
-              <Row>
+  <Row>
                 <Col>
                   <FormGroup>
                     <Label for="dni">
@@ -254,6 +268,85 @@ const versionItem = (props) => {
                       onChange={(date) => {
                         setEndDate(date)
                       }}
+                    />
+                  </FormGroup>
+                </Col>
+              </Row>
+              <Row></Row>
+              <Row>
+                <Col>
+                  <FormGroup>
+                    <Label for="priceTeacher">
+                      Honorarios profesor
+               
+                    </Label>
+                      <Input
+                      name="priceTeacher"
+                      id="priceTeacher"
+                      autoComplete={0}
+                      defaultValue={priceTeacher}
+                      placeholder="Ingresar los honorarios profesor"
+                      innerRef={register({ required: false })}
+                      className={classnames({
+                        "is-invalid": errors["priceTeacher"]
+                      })}
+                    />
+                  </FormGroup>
+                </Col>
+                 <Col>
+                  <FormGroup>
+                    <Label for="priceDirector">
+                      Honorarios director
+               
+                    </Label>
+                      <Input
+                      name="priceDirector"
+                      id="priceDirector"
+                      autoComplete={0}
+                      defaultValue={priceDirector}
+                      placeholder="Ingresar los honorarios director"
+                      innerRef={register({ required: false })}
+                      className={classnames({
+                        "is-invalid": errors["priceDirector"]
+                      })}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col>
+                  <FormGroup>
+                    <Label for="priceCoordinator">
+                      Honorarios Coordinador
+               
+                    </Label>
+                      <Input
+                      name="priceCoordinator"
+                      id="priceCoordinator"
+                      autoComplete={0}
+                      defaultValue={priceCoordinator}
+                      placeholder="Ingresar los honorarios coordinador"
+                      innerRef={register({ required: false })}
+                      className={classnames({
+                        "is-invalid": errors["priceCoordinator"]
+                      })}
+                    />
+                  </FormGroup>
+                </Col>
+                <Col>
+                  <FormGroup>
+                    <Label for="priceTutorTfm">
+                      Honorarios Profesor Tfm
+               
+                    </Label>
+                      <Input
+                      name="priceTutorTfm"
+                      id="priceTutorTfm"
+                      autoComplete={0}
+                      defaultValue={priceTutorTfm}
+                      placeholder="Ingresar los honorarios profesor tfm"
+                      innerRef={register({ required: false })}
+                      className={classnames({
+                        "is-invalid": errors["priceTutorTfm"]
+                      })}
                     />
                   </FormGroup>
                 </Col>

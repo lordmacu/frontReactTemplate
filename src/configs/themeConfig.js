@@ -6,7 +6,8 @@ const themeConfig = {
     appName: 'UVirtual',
     appLogoImage: require('@src/assets/images/logo/logo.png').default
   },
-  apiUrl:"https://platform.uvirtual.org:3000/api/",
+  apiUrl:"http://localhost:3000/api/",
+  apiUrlNormal:"http://localhost:3000/",
   apiUrlImage:"http://localhost:3000/uploads/", 
   layout: { 
     isRTL: false,

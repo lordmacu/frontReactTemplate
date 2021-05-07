@@ -10,6 +10,17 @@ export const setEditOn = (val, row) => {
   }
 }
 
+export const setPopUpAsignatura = (val, subject) => {
+  return async (dispatch) => {
+     dispatch({
+      type: "SET_POPUP_ASIGNATURA",
+      data: val,
+      subject
+    })
+  }
+}
+
+
 export const addImage = (image) => {
   return async (dispatch) => {
     dispatch({
@@ -18,7 +29,19 @@ export const addImage = (image) => {
     })
   }
 }
-
+// ** Get data on page or row change
+export const getData = (params) => {
+  return async (dispatch) => {
+    await axios.post(`${baseUrl}programs/get`, params).then((response) => {
+      dispatch({
+        type: "GET_DATA",
+        data: response.data.docs,
+        totalPages: response.data.totalDocs,
+        params
+      })
+    })
+  }
+}
 
 export const updateVersion = (id, data) => {
   return (dispatch, getState) => {
@@ -41,6 +64,16 @@ export const updateVersion = (id, data) => {
       })
 
       .catch((err) => console.log(err))
+  }
+}
+
+export const deleteSubjectPost = (params) => {
+  return async (dispatch, getState) => {
+    await axios
+      .post(`${baseUrl}programs/deleteSubjectPost`, params).then((response) => {
+        dispatch(getData(getState().programs.params))
+
+    })
   }
 }
 
@@ -81,19 +114,28 @@ export const getALlPeople = (params) => {
   }
 }
 
-// ** Get data on page or row change
-export const getData = (params) => {
+export const addSubject = (params) => {
+  return async (dispatch, getState) => {
+    await axios.post(`${baseUrl}programs/addSubject`, params).then((response) => {
+        dispatch(getData(getState().programs.params))
+
+    })
+  }
+}
+
+
+export const getSubject = (params) => {
   return async (dispatch) => {
-    await axios.post(`${baseUrl}programs/get`, params).then((response) => {
+    await axios.post(`${baseUrl}subjects/find`, params).then((response) => {
+      console.log("sdfasdf asd ", response.data)
       dispatch({
-        type: "GET_DATA",
-        data: response.data.docs,
-        totalPages: response.data.totalDocs,
-        params
+        type: "GET_ALL_SUBJECTS",
+        data: response.data
       })
     })
   }
 }
+
 
 // ** Get Item
 export const getItem = (id) => {

@@ -1,19 +1,16 @@
 // ** React Import
 import { useState, useEffect } from "react"
-import InputPasswordToggle from "@components/input-password-toggle"
-import { useDispatch, useSelector } from "react-redux"
-
+ import { useDispatch, useSelector } from "react-redux"
+import SunEditor from "suneditor-react"
+import "suneditor/dist/css/suneditor.min.css"
 // ** Custom Components
 import Sidebar from "@components/sidebar"
+import { Paperclip, ExternalLink } from "react-feather"
+import themeConfig from "@configs/themeConfig"
 
+import { getBase64, gotoFile} from "@utils"
 import Select from "react-select"
-import Uppy from "@uppy/core"
-const XHRUpload = require("@uppy/xhr-upload")
-
-import { DragDrop } from "@uppy/react"
-
-// ** Utils
-import { getImageUser } from "@utils"
+ 
 import Flatpickr from "react-flatpickr"
 import "@styles/react/libs/flatpickr/flatpickr.scss"
 
@@ -45,13 +42,15 @@ import {
 } from "../store/action"
 
 const SidebarNewItems = ({ open, toggleSidebar }) => {
+
+  const baseUrl = themeConfig.apiUrlNormal
+
   // ** States
   const dispatch = useDispatch()
 
   const store = useSelector((state) => state.subjects)
 
-  const baseUrl = "http://localhost:3000/api/"
-
+ 
   const [name, setName] = useState("")
 
   const [sigla, setSigla] = useState("")
@@ -65,12 +64,14 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
   const [id, setId] = useState(0)
   const [version, setVersion] = useState("")
   const [credits, setCredits] = useState("")
+  const [price, setPrice] = useState("")
   const [hours, setHours] = useState("")
   const [content, setContent] = useState("")
   const [types, setTypes] = useState([])
   const [statuses, setStatuses] = useState([])
   const [type, setType] = useState(null)
   const [status, setStatus] = useState(null)
+  const [planAnalitico, setPlanAnalitico] = useState(null)
 
   const { register, errors, handleSubmit, control, trigger } = useForm({
     defaultValues: { dob: new Date() }
@@ -83,14 +84,18 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
       setSigla(store.rowData.sigla)
 
       const statusLocal = store.rowData.status
-      statusLocal.label = statusLocal.name
+      if (!!statusLocal) {
+              statusLocal.label = statusLocal.name
+
+      }
       setStatus(statusLocal)
 
       setVersion(store.rowData.version)
       setCredits(store.rowData.credits)
       setHours(store.rowData.hours)
       setContent(store.rowData.content)
-
+      setPrice(store.rowData.price)
+      setPlanAnalitico(store.rowData.planAnalitico)
       if (!!store.rowData.type) {
         const typeLocal = store.rowData.type
         typeLocal.label = typeLocal.name
@@ -106,6 +111,9 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
       setCredits(null)
       setHours(null)
       setContent(null)
+      setPrice(null)
+      setPlanAnalitico(null)
+
     }
 
     dispatch(getAllTypes({}))
@@ -124,9 +132,9 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
 
   const titlePanel = (val) => {
     if (id === 0) {
-      return "Agregar materia"
+      return "Agregar asignatura"
     } else {
-      return "Editar materia"
+      return "Editar asignatura"
     }
   }
 
@@ -144,6 +152,13 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
     return disabled
   }
 
+ 
+  const onSubmitPlan = (e) => {
+    getBase64(e.target.files[0]).then((data) => setPlanAnalitico({ file: data })
+    )
+  }
+
+ 
   // ** Vars
 
   // ** Function to handle form submit
@@ -152,8 +167,9 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
     values["type"] = type._id
     values["startDate"] = startDate
     values["endDate"] = endDate
+    values["content"] = content
     values["id"] = id
-    console.log(values)
+    values["planAnalitico"] = planAnalitico
 
     toggleSidebar()
 
@@ -223,6 +239,60 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
         <Row>
           <Col>
             <FormGroup>
+              <Label for="price">Adjuntar</Label>
+              <Button.Ripple
+                tag="label"
+                className="mr-50 cursor-pointer"
+                color="primary"
+                outline
+              >
+              <Paperclip size={14} />   Plan analítico
+                                 
+
+                <Input
+                  type="file"
+                  name="file"
+                  id="uploadImg"
+                  hidden
+                  onChange={onSubmitPlan}
+                />
+              </Button.Ripple>
+              { planAnalitico && <Button.Ripple
+                
+                onClick={() => {
+                  gotoFile(planAnalitico)
+                }}
+                tag="label"
+                className="mr-50 cursor-pointer"
+                color="primary"
+                outline
+              >
+                <ExternalLink size={14} />
+                
+              </Button.Ripple>}
+            </FormGroup>
+          </Col>
+
+          <Col>
+            <FormGroup>
+              <Label for="price">Costo asignatura:</Label>
+              <Input
+                name="price"
+                id="price"
+                autoComplete={0}
+                defaultValue={price}
+                type="number"
+                placeholder="Ingresar el precio"
+                innerRef={register({ required: true })}
+                className={classnames({ "is-invalid": errors["price"] })}
+              />
+            </FormGroup>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <FormGroup>
               <Label for="credits">Créditos:</Label>
               <Input
                 name="credits"
@@ -257,15 +327,25 @@ const SidebarNewItems = ({ open, toggleSidebar }) => {
           <Label for="content">
             Contenido <span className="text-danger">*</span>
           </Label>
-          <Input
-            name="content"
+
+          <SunEditor
+            name="title"
+            setOptions={{
+              height: 300,
+              buttonList: [
+                ["font", "align", "fontSize", "table", "textStyle", "align"],
+                ["image"]
+              ]
+            }}
             id="content"
             autoComplete={0}
             defaultValue={content}
-            type="textarea"
             placeholder="Ingresar el contenido"
             innerRef={register({ required: true })}
-            className={classnames({ "is-invalid": errors["content"] })}
+            onChange={setContent}
+            className={classnames({
+              "is-invalid": errors["content"]
+            })}
           />
         </FormGroup>
 

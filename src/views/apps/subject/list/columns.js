@@ -10,7 +10,7 @@ const MySwal = withReactContent(Swal)
 import Avatar from "@components/avatar"
 
 // ** Store & Actions
-import { getItem, deleteItem, setEditOn, cloneItem } from "../store/action"
+import { getItem, deleteItem, setEditOn, cloneItem, setPopUpTeacher, getAllTutors, setPopUpStudent } from "../store/action"
 import { store } from "@store/storeConfig/store"
 
 // ** Third Party Components
@@ -67,7 +67,7 @@ const formatDate = (date) => {
 export const columns = [
   {
     name: "Actions",
-    minWidth: "320px",
+    minWidth: "350px",
     maxWidth: "2500px",
     selector: "_id",
     sortable: true,
@@ -78,20 +78,23 @@ export const columns = [
           outline
           color="primary"
           onClick={() => {
-            store.dispatch(setEditOn(Math.random(), row))
+            store.dispatch(setPopUpStudent(true, row))
+
+
           }}
         >
-          Alumnos
+          Estudiante
         </Button.Ripple>
          <Button.Ripple
           className="btn-icon mr-50"
           outline
           color="primary"
           onClick={() => {
-            store.dispatch(setEditOn(Math.random(), row))
+            store.dispatch(getAllTutors())
+            store.dispatch(setPopUpTeacher(true, row))
           }}
         >
-          Tutor
+          Profesor
         </Button.Ripple>
          <Button.Ripple
           className="btn-icon mr-50"

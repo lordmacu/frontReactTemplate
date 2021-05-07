@@ -4,6 +4,7 @@ export const getImageServer = obj => {
   return "http://localhost:3000"
 }
 import themeConfig from '@configs/themeConfig'
+  const baseUrl = themeConfig.apiUrlNormal
 
 // ** Returns K format from a number
 export const kFormatter = num => (num > 999 ? `${(num / 1000).toFixed(1)}k` : num)
@@ -88,6 +89,17 @@ export const getHomeRouteForLoggedInUser = userRole => {
   if (userRole === 'client') return '/access-control'
   return '/login'
 }
+ export const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result)
+      reader.onerror = (error) => reject(error)
+    })
+ }
+  export const gotoFile = (file) => {      
+    window.open(baseUrl + file)
+  }
 
 // ** React Select Theme Colors
 export const selectThemeColors = theme => ({

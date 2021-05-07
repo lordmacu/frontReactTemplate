@@ -10,6 +10,100 @@ export const setEditOn = (val, row) => {
   }
 }
 
+export const setPopUpTeacher = (val, subject) => {
+  return async (dispatch) => {
+     dispatch({
+      type: "SET_POPUP_TEACHER",
+      data: val,
+      subject
+    })
+  }
+}
+
+export const setPopUpStudent = (val, subject) => {
+  return async (dispatch) => {
+     dispatch({
+      type: "SET_POPUP_STUDENT",
+      data: val,
+      subject
+    })
+  }
+}
+
+export const getALlPeople = (params) => {
+  return async (dispatch) => {
+    await axios.post(`${baseUrl}people/find`, params).then((response) => {
+      dispatch({
+        type: "GET_ALL_PEOPLE",
+        data: response.data
+      })
+    })
+  }
+}
+
+export const getData = (params) => {
+  return async (dispatch) => {
+    await axios.post(`${baseUrl}subjects/get`, params).then((response) => {
+   
+      
+      dispatch({
+        type: "GET_DATA",
+        data: response.data.docs,
+        totalPages: response.data.totalDocs,
+        params
+      })
+    })
+  }
+}
+
+export const deleteTeacherPost = (params) => {
+  return async (dispatch, getState) => {
+    await axios
+      .post(`${baseUrl}subjects/deleteTutor`, params).then((response) => {
+             dispatch(getData(getState().subjects.params))
+
+    })
+  }
+}
+export const deleteStudentPost = (params) => {
+  return async (dispatch, getState) => {
+    await axios
+      .post(`${baseUrl}subjects/deleteStudent`, params).then((response) => {
+             dispatch(getData(getState().subjects.params))
+
+    })
+  }
+}
+
+export const setPrincpalTeacher = (params) => {
+  return async (dispatch, getState) => {
+    await axios
+      .post(`${baseUrl}subjects/setPrincpalTeacher`, params).then((response) => {
+      dispatch(getData(getState().subjects.params))
+    })
+  }
+}
+
+
+export const addProfessor = (params) => {
+  return async (dispatch, getState) => {
+    await axios.post(`${baseUrl}subjects/addTutor`, params).then((response) => {
+        dispatch(getData(getState().subjects.params))
+
+    })
+  }
+}
+
+
+export const addStudent = (params) => {
+  return async (dispatch, getState) => {
+    await axios.post(`${baseUrl}subjects/addStudent`, params).then((response) => {
+        dispatch(getData(getState().subjects.params))
+
+    })
+  }
+}
+
 export const addImage = (image) => {
   return async (dispatch) => {
     dispatch({
@@ -30,6 +124,19 @@ export const getAllTypes = (params) => {
   }
 }
 
+export const getAllTutors = (params) => {
+  return async (dispatch) => {
+    await axios.post(`${baseUrl}tutors/getAll`, params).then((response) => {
+      dispatch({
+        type: "GET_ALL_TUTORS",
+        data: response.data
+        
+      })
+    })
+  }
+}
+
+
 export const getAllStatuses = (params) => {
   return async (dispatch) => {
     await axios.post(`${baseUrl}statuses/get`, params).then((response) => {
@@ -42,18 +149,7 @@ export const getAllStatuses = (params) => {
 }
 
 // ** Get data on page or row change
-export const getData = (params) => {
-  return async (dispatch) => {
-    await axios.post(`${baseUrl}subjects/get`, params).then((response) => {
-      dispatch({
-        type: "GET_DATA",
-        data: response.data.docs,
-        totalPages: response.data.totalDocs,
-        params
-      })
-    })
-  }
-}
+
 
 // ** Get Item
 export const getItem = (id) => {
@@ -90,6 +186,8 @@ export const addItem = (item) => {
 
 
 export const udpateItem = (item, props) => {
+
+   
   return (dispatch, getState) => {
     axios
       .put(`${baseUrl}subjects/update/${item.id}`, item)
